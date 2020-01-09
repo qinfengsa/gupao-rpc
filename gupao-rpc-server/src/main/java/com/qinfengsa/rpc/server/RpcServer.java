@@ -3,6 +3,9 @@ package com.qinfengsa.rpc.server;
 import com.qinfengsa.rpc.annotation.RpcService;
 import com.qinfengsa.rpc.common.codec.RpcCodec;
 import com.qinfengsa.rpc.common.serialization.HessianCodec;
+import com.qinfengsa.rpc.common.serialization.MsgPackCodec;
+import com.qinfengsa.rpc.common.serialization.ProtostuffCodec;
+import com.qinfengsa.rpc.common.util.RpcConfig;
 import com.qinfengsa.rpc.registry.ServiceRegistry;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -23,6 +26,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.env.Environment;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -45,6 +49,14 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
 
     private Map<String, Object> handlerMap = new HashMap<>(16);
 
+
+    private Map<String,RpcCodec> rpcCodecMap = new HashMap<>(16);
+    {
+        rpcCodecMap.put("Hessian",new HessianCodec());
+        rpcCodecMap.put("MsgPack",new MsgPackCodec());
+        //rpcCodecMap.put("Protostuff",new ProtostuffCodec());
+    }
+
     /**
      * 编解码器
      */
@@ -57,14 +69,15 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
     private ServiceRegistry serviceRegistry = new ServiceRegistry();
 
 
-    public RpcServer(int port,RpcCodec rpcCodec) {
-
+    public RpcServer(int port) {
         this.port = port;
-        this.rpcCodec = rpcCodec;
     }
 
     @Override
     public void setApplicationContext(ApplicationContext context) throws BeansException {
+        Environment environment = context.getEnvironment();
+        String codecType = environment.getProperty(RpcConfig.CODEC_NAME);
+        this.rpcCodec = this.rpcCodecMap.get(codecType);
         Map<String, Object> serviceBeanMap = context.getBeansWithAnnotation(RpcService.class);
 
         if (!serviceBeanMap.isEmpty()) {

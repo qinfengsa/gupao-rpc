@@ -8,6 +8,8 @@ import io.netty.channel.ChannelPipeline;
  */
 public interface RpcCodec {
 
+
+
     /**
      * 为Netty添加编码和解码
      * @param pipeline

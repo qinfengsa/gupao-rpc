@@ -34,13 +34,13 @@ public class ProtostuffCodec implements RpcCodec {
     public void addHandler(ChannelPipeline pipeline) {
 
         // 编码器
-        pipeline.addLast("encoder",new ProtostufEncoder());
+        pipeline.addLast("encoder",new ProtostuffEncoder());
         // 解码器
-        pipeline.addLast("decoder",new ProtostufDecoder());
+        pipeline.addLast("decoder",new ProtostuffDecoder());
 
     }
 
-    class ProtostufEncoder extends MessageToByteEncoder<Object> {
+    class ProtostuffEncoder extends MessageToByteEncoder<Object> {
         @Override
         protected void encode(ChannelHandlerContext channelHandlerContext, Object object,
                               ByteBuf byteBuf) throws Exception {
@@ -56,7 +56,7 @@ public class ProtostuffCodec implements RpcCodec {
 
     }
 
-    class ProtostufDecoder extends ByteToMessageDecoder {
+    class ProtostuffDecoder extends ByteToMessageDecoder {
 
         @Override
         protected void decode(ChannelHandlerContext channelHandlerContext,

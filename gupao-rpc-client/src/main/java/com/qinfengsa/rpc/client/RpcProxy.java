@@ -42,6 +42,8 @@ public class RpcProxy  implements InvocationHandler {
         request.setMethodName(method.getName());
         request.setParameterTypes(method.getParameterTypes());
         request.setParameters(args);
+
+
         String address = serviceDiscovery.discovery(serviceName);
         String[] urls = address.split(":");
         String host = urls[0];

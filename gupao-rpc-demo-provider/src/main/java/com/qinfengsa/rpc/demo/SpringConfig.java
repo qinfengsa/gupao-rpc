@@ -6,18 +6,20 @@ import com.qinfengsa.rpc.server.RpcServer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * @author: qinfengsa
  * @date: 2019/7/25 17:00
  */
 @Configuration
-@ComponentScan(basePackages = "com.qinfengsa.rpc")
+@PropertySource("classpath:RpcConfig.properties")
+@ComponentScan(basePackages = "com.qinfengsa.rpc.demo.service")
 public class SpringConfig {
 
     @Bean(name="rpcServer")
     public RpcServer rpcServer(){
-        RpcCodec rpcCodec = new HessianCodec();
-        return new RpcServer(8080,rpcCodec);
+        return new RpcServer(8080 );
     }
 }
